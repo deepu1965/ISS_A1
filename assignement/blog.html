@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Blog Page</title>
+  </head>
+  <body style="background-image: url(blog-background.jpeg); background-size: cover; color: chartreuse;font-family: Arial, Helvetica, sans-serif;">
+    <h1 style="text-align: center">FIRE VS ICE</h1>
+    <img
+      src="blog1-image.jpeg"
+      style="margin-left: 20%"
+      height="70%"
+      width="50%"
+    />
+    <section class="blog" id="blog1" style="text-align: center">
+      <h2>Blog 1: Please like and comment!!!!</h2>
+
+      <button onclick="likeBlog('blog1')" id="likeButton1">Like</button>
+      <span id="likeCount1">0</span> Likes
+
+      <br />
+
+      <textarea placeholder="Add a comment..." id="commentInput1"></textarea>
+      <button onclick="addComment('blog1')">Add Comment</button>
+
+      <div id="comments1">
+      <!-- Comments will be displayed here -->
+      </div>
+    </section>
+    <br /><br /><br />
+    <img
+      src="blog2-image.jpeg"
+      style="margin-left: 20%"
+      height="70%"
+      width="50%"
+    />
+
+    <section class="blog" id="blog2" style="text-align: center;">
+      <h2>Blog 2: Please like and comment!!!</h2>
+
+      <button onclick="likeBlog('blog2')" id="likeButton2">Like</button>
+      <span id="likeCount2">0</span> Likes
+
+      <br />
+
+      <textarea placeholder="Add a comment..." id="commentInput2"></textarea>
+      <button onclick="addComment('blog2')">Add Comment</button>
+
+      <div id="comments2">
+        <!-- Comments will be displayed here -->
+      </div>
+    </section>
+
+    <script>
+      function likeBlog(blogId) {
+        const likeButton = document.getElementById(
+          "likeButton" + blogId.charAt(blogId.length - 1)
+        );
+
+        // Check if the button is not disabled
+        if (!likeButton.disabled) {
+          let likeCount = localStorage.getItem(blogId + "-likes") || 0;
+          likeCount = parseInt(likeCount) + 1;
+          localStorage.setItem(blogId + "-likes", likeCount);
+          document.getElementById(
+            "likeCount" + blogId.charAt(blogId.length - 1)
+          ).innerText = likeCount + " Likes";
+
+          // Disable the button after clicking
+          likeButton.disabled = true;
+        }
+      }
+
+      function addComment(blogId) {
+        const commentInput = document.getElementById(
+          "commentInput" + blogId.charAt(blogId.length - 1)
+        );
+        const comment = commentInput.value.trim();
+
+        if (comment !== "") {
+          let comments =
+            JSON.parse(localStorage.getItem(blogId + "-comments")) || [];
+          comments.push(comment);
+          localStorage.setItem(blogId + "-comments", JSON.stringify(comments));
+
+          // Display comments
+          displayComments(blogId);
+
+          // Clear the comment input
+          commentInput.value = "";
+        }
+      }
+
+      function displayComments(blogId) {
+        const commentsDiv = document.getElementById(
+          "comments" + blogId.charAt(blogId.length - 1)
+        );
+        let comments =
+          JSON.parse(localStorage.getItem(blogId + "-comments")) || [];
+
+        let commentsHtml = "";
+        for (const comment of comments) {
+          commentsHtml += "<p>" + comment + "</p>";
+        }
+
+        commentsDiv.innerHTML = commentsHtml;
+      }
+
+      document.getElementById("likeCount1").innerText =
+        localStorage.getItem("blog1-likes") || "0 Likes";
+      document.getElementById("likeCount2").innerText =
+        localStorage.getItem("blog2-likes") || "0 Likes";
+
+      displayComments("blog1");
+      displayComments("blog2");
+    </script>
+    <button onclick="resetData()">Reset Data</button>
+
+    <script>
+      function resetData() {
+        localStorage.removeItem("blog1-likes");
+        localStorage.removeItem("blog1-comments");
+        localStorage.removeItem("blog2-likes");
+        localStorage.removeItem("blog2-comments");
+
+        // Reset displayed data
+        document.getElementById("likeCount1").innerText = "0 Likes";
+        document.getElementById("likeCount2").innerText = "0 Likes";
+        document.getElementById("comments1").innerHTML = "";
+        document.getElementById("comments2").innerHTML = "";
+
+        // Enable the like buttons
+        document.getElementById("likeButton1").disabled = false;
+        document.getElementById("likeButton2").disabled = false;
+      }
+    </script>
+  </body>
+</html>
